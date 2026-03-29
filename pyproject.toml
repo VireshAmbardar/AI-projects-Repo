@@ -1,0 +1,42 @@
+[project]
+name = "accessment"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Viresh Ambardar",email = "ambardarviresh18@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "numpy (>=2.4.1,<3.0.0)",
+    "fastapi (>=0.128.0,<0.129.0)",
+    "uvicorn (>=0.40.0,<0.41.0)",
+    "python-dotenv (>=1.2.1,<2.0.0)",
+    "pydantic (>=2.12.5,<3.0.0)",
+    "pydantic-settings (>=2.12.0,<3.0.0)",
+    "python-multipart (>=0.0.22,<0.0.23)",
+    "pdfplumber (>=0.11.7,<0.12.0)",
+    "sentence-transformers (>=5.1.1,<6.0.0)",
+    "langchain (>=0.3.27,<0.4.0)",
+    "langchain-community (>=0.3.27,<0.4.0)",
+    "langchain-text-splitters (>=0.3.9,<0.4.0)",
+    "chromadb (>=1.0.20,<2.0.0)",
+    "torch-directml (>=0.2.5.dev240914,<0.3.0)",
+    "docling (>=2.70.0,<3.0.0)",
+    "tabulate (>=0.9.0,<0.10.0)",
+    "pandas (>=2.1.4,<3.0.0)",
+    "hf-xet (>=1.2.0,<2.0.0)",
+    "flagembedding (>=1.3.5,<2.0.0)",
+    "rank-bm25 (>=0.2.2,<0.3.0)",
+    "groq (>=0.31.0,<0.32.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+
+[tool.poetry]
+package-mode = false

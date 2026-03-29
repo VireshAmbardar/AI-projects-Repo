@@ -1,0 +1,18 @@
+# Python related
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+
+# Virtual environment folder
+.venv/
+
+# Environment variables
+.env
+.data/
+
+./data/cache/
+.data/chromadb/
+
+
+poetry.lock
