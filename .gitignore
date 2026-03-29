@@ -6,6 +6,7 @@ __pycache__/
 
 # Virtual environment folder
 .venv/
+venv/
 
 # Environment variables
 .env
@@ -15,4 +16,5 @@ __pycache__/
 .data/chromadb/
 
 
+.poetry.lock
 poetry.lock

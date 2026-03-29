@@ -1,1 +1,1 @@
-from heartbeat import router as testRouter
+from .heartbeat import router as hbrouter
