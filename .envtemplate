@@ -2,6 +2,3 @@ APP_NAME="AI Trading Chatbot API"
 APP_DESCRIPTION="API for PDF upload and RAG-based QA"
 APP_VERSION="0.1.0"
 PORT=8032
-
-# Required for LLM calls
-GROQ_API_KEY="your_api_key_here"
