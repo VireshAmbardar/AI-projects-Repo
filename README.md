@@ -1,24 +1,19 @@
-# Main Branch Overview — AI Project Workspace
+# Business Idea Evaluator 
 
-This repository is the **general main branch** for AI-based projects.
+Ai system that helps founders evaluate startup ideas from multiple expert perspectives.
 
-Each branch in this repository represents its **own separate project**, and every project created from this workspace is intended to be an **AI-based project**.
-
-This main branch acts as the common starting point, while individual branches can evolve into dedicated AI applications.
+We will employee 2 key techniques.
+1. Parallelization
+2. human-in-the-loop
 
 ---
 
-## Purpose of this Repository
+## Working
 
-This main branch is intended to:
-
-- serve as a **base branch** for multiple AI projects
-- keep a common development structure
-- allow each branch to become an independent AI project
-- provide a reusable setup for future AI-based applications
-
-> **Main branch = common base**  
-> **Each branch = its own AI project**
+1. the syetem will talk with user directly. it will ask clearifying questions till it gets enough information to evaluate the idea. keeping human in the loop to steer the process.
+2. Once the idea is well defined, the application will distribute the work into several specialized  Aiagents.
+3. Each agent will evaluate the idea from its own perspective.
+4. Finally, the application will compile the reports from all agents and present them to the user.
 
 ---
 
