@@ -1,10 +1,12 @@
-# Main Branch Overview — AI Project Workspace
+# Smart_Diagnosis_API_with_AI_Integration
 
-This repository is the **general main branch** for AI-based projects.
+**Smart Diagnosis API with AI Integration** is a backend system designed to analyze user-provided symptoms and generate possible medical conditions along with actionable recommendations. The system combines structured backend development practices with AI capabilities to deliver meaningful, consistent, and user-friendly diagnostic insights.
 
-Each branch in this repository represents its **own separate project**, and every project created from this workspace is intended to be an **AI-based project**.
+The API exposes a `/diagnose` endpoint that accepts symptom input and returns 2–3 probable conditions, each accompanied by a probability score and suggested next steps such as recommended medical tests or specialist consultations. AI integration is used to enhance the quality, clarity, and consistency of responses, either through external AI APIs or a hybrid rule-based approach.
 
-This main branch acts as the common starting point, while individual branches can evolve into dedicated AI applications.
+Additionally, the system includes a history tracking feature powered by MongoDB, enabling storage and retrieval of past diagnosis requests via a `/history` endpoint. This ensures traceability and supports future enhancements such as analytics or personalization.
+
+The project follows a clean and modular backend architecture, including proper separation of routes, controllers, and models, along with basic error handling and scalability considerations. It is designed to simulate a real-world production-ready service with optional deployment support.
 
 ---
 
