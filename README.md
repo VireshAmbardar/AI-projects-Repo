@@ -12,7 +12,7 @@ We will employee 2 key techniques.
 
 1. the syetem will talk with user directly. it will ask clearifying questions till it gets enough information to evaluate the idea. keeping human in the loop to steer the process.
 2. Once the idea is well defined, the application will distribute the work into several specialized  Aiagents.
-3. Each agent will evaluate the idea from its own perspective.
+3. Each agent will take a distinct role and evaluate the idea from its own perspective.
 4. Finally, the application will compile the reports from all agents and present them to the user.
 
 ---

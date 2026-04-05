@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from typing import Optional
 from app.settings import settings
-from app.routers import hbrouter,diagnoserouter
+from app.routers import hbrouter,evarouter
 
 PREFIX = "/api"
 VERSION = "v1"
@@ -39,7 +39,7 @@ app.include_router(
     )
 
 app.include_router(
-        diagnoserouter, prefix=f"{PREFIX}/{VERSION}"
+        evarouter, prefix=f"{PREFIX}/{VERSION}"
     )
 
 def main():
