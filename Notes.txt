@@ -1,0 +1,38 @@
+Why Google ADK ?
+
+Ans: Goolge ADK is  Flexible and Modular that allow users to develop and Deploy and test Ai Agents
+
+Benefits:
+1. Open Source Development Kit
+2. Model Agnostic : means You can bring any LLM Model.
+3. compatable with other Frameworks (A2A). 
+4. Allows user to orchestrate multiple Archetectures.
+5. It can achieve simple tasts to complex workflows
+
+
+What is Goole ADK. 
+Advantages and limitations in goolge ADK
+Comparison of Google ADK with other Frameworks like CrewAi, Langchain,and Autogen
+
+* LiteLLM
+* Tooltypes in ADK
+    - Function tools : tools created by the user, tailored to specefic needs eg, convert_temperature, Convert_currency etc.
+        - Functions
+        - Agent as Tool
+        - long running Function tools
+    - BuiltIn tools : Ready to use tools Provided by ADK eg goole search, RAG code execution etc
+    - Third Party Tools: Integrated tools seamlessly from outher framework like Langchain, OpenAI, CrewAi etc.
+    - MCP Tools: 
+
+Limitations and workaround in ADK
+Session service in ADK, 
+    - InmemorySession service
+    - Vertex Ai Session service
+    - DatabaseSession Service
+Session memory and Long term memory, and 
+Role of State across evets and agents in google ADK
+Runner, and runner role as orchastrator in google ADK
+How to run MultiAgent System(MAS) in google ADK
+Sub agent Archetectures (workflow,loop, sequqntial and Parallel agents) in ADK (Theory + practical Code)
+Callbacks in ADK
+MCP with ADK

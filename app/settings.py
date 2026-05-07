@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     port: int = 8000
 
     # groq_api_key: str  # <-- correct name
+    # GEMINI_API_KEY
+    # gemini_api_key : str
 
     model_config = SettingsConfigDict(
         env_file= BASE_DIR /".env",

@@ -18,3 +18,5 @@ venv/
 
 .poetry.lock
 poetry.lock
+
+.env
