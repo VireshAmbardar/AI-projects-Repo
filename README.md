@@ -1,180 +1,50 @@
-# Main Branch Overview — AI Project Workspace
+# E-commerce Generative Recommendation with ADK, Vector Search, and OLLAMA
 
-This repository is the **general main branch** for AI-based projects.
+This repository demonstrates how to build an advanced recommendation engine for e-commerce using a multi-agent architecture powered by ADK, vector search, and OLLAMA.
 
-Each branch in this repository represents its **own separate project**, and every project created from this workspace is intended to be an **AI-based project**.
+## What is Generative Recommendation?
 
-This main branch acts as the common starting point, while individual branches can evolve into dedicated AI applications.
+Generative recommendation is an AI-driven approach that goes beyond keyword matching. It interprets user intent, expands queries, and uses external research to generate richer recommendations.
 
----
+### Key capabilities
 
-## Purpose of this Repository
+- **Understand and expand user intent**
+  - The system interprets the underlying need behind a query, not just the exact words. For example, a request for a "birthday present for a 10-year-old boy" becomes a broader product exploration.
 
-This main branch is intended to:
+- **Leverage external research**
+  - The process can incorporate market research through tools like Google Search. This helps identify popular product categories and real-world buying behaviors for the given intent.
 
-- serve as a **base branch** for multiple AI projects
-- keep a common development structure
-- allow each branch to become an independent AI project
-- provide a reusable setup for future AI-based applications
+- **Generate improved search queries**
+  - The AI creates more specific and diverse queries based on the original request. Examples include "educational toys for 10-year-olds," "adventure books for boys," and "coding kits for kids."
 
-> **Main branch = common base**  
-> **Each branch = its own AI project**
+### Why it matters
 
----
+Instead of returning limited results, generative recommendation proactively suggests relevant ideas and search paths. This makes product discovery more intelligent and user-centric.
 
-## Reference Project Example
+## Architecture Overview
 
-One example AI project in this repository is an **AI Trading Chatbot (PDF-Based RAG)**.
+The system is designed as a multi-agent pipeline:
 
-It is an **AI chatbot API** that answers questions **only from uploaded financial PDFs** using a **Retrieval-Augmented Generation (RAG)** pipeline.
+1. **Intent analysis** — interpret the user request and extract the underlying need.
+2. **Research and query generation** — use external data sources to discover related search concepts.
+3. **Recommendation synthesis** — combine the results into targeted product suggestions.
 
-### What this example project does
+The architecture is visualized in the following flow:
 
-- Upload multiple PDFs as a knowledge base
-- Ask questions through an API
-- Generate answers grounded only in uploaded documents
-- Optionally maintain chat memory using `session_id`
-
----
-
-## Tech Stack
-
-- **Python**
-- **FastAPI**
-- **pdfplumber** with **Docling fallback**
-- **sentence-transformers**
-- **ChromaDB**
-- **BM25 + Dense Retrieval + RRF**
-- **Groq Chat Completions**
-- **Poetry** for dependency management
-
----
-
-## Project Structure
-
-```text
-ai-trading-chatbot/
-├── .venv/                 # Poetry in-project virtual environment
-├── app/
-├── routers/               # Contain Schemasa for Endpoint
-│     ├── heartbeat.py     # Template function.
-│   ├── main.py            # FastAPI entry point + routes
-├── schemas/               # Contain Schemasa for Endpoint
-├── data/
-│   └── pdfs/              # Local PDFs
-│   example/               # Excel for Endpoint with example inputs
-├── .env                   # Environment variables
-├── .envtemplate           # Example env file
-├── pyproject.toml         # Poetry config
-├── poetry.lock            # Locked dependencies
-└── README.md
-```
-
----
-
-## Environment Versions
-
-This project is being run with:
-
-- **Poetry version:** `2.3.2`
-- **Python version:** `3.12.3`
-
----
-
-## Application Name Setup
-
-Inside poetry.toml file replace
-
-- name
-- description
-- version
-
----
-
-## Setup Instructions
-
-### 1) Prerequisites
-
-Make sure the following are installed on your system:
-
-- **Python 3.14.2**
-- **Poetry 2.3.2**
-
-### 2) Configure Poetry
-
-Use an in-project virtual environment so the `.venv/` folder is created inside the project:
-
-```bash
-poetry config virtualenvs.in-project true
-```
-
-### 3) Install Dependencies
-
-If your `pyproject.toml` already exists, install dependencies using:
-
-```bash
-poetry install
-```
-
-If starting from scratch, initialize first and then install:
-
-```bash
-poetry init
-poetry install
-```
-
-To add packages later:
-
-```bash
-poetry add <package-name>
-```
-
-### 4) Configure Environment Variables
-
-Create a `.env` file, or copy from `.envtemplate`.
-
-Example:
-
-```env
-APP_NAME="AI Trading Chatbot API"
-APP_DESCRIPTION="API for PDF upload and RAG-based QA"
-APP_VERSION="0.1.0"
-PORT=8032
-```
-For every new variable add a variable in app/settings.py 
-
-### How configuration is loaded
-
-- `app/settings.py` uses settings from `.env`
-- `app/main.py` uses those settings for application metadata and docs configuration
-
----
-
-## How to Run the Project
-
-This project expects a launcher file named `run.py`.
-
-Run it using:
-
-```
-poetry run python -m app.main
-```
-
-After starting the server, open the Swagger docs at:
-
-```text
-http://localhost:8032/api/docs/
-```
-
----
+![System Flow](assets/image.png)
 
 ## Summary
 
-This repository is not just for one project.  
-It is the **general main branch** for multiple **AI-based projects**.
+This tutorial walks through building a multi-agent e-commerce recommendation system focused on generative recommendations.
 
-Each branch created from this repository should be treated as:
+It demonstrates how to:
 
-- an independent project
-- AI-focused
-- built using the shared setup and standards from the main branch
+- interpret user intent,
+- perform external research,
+- generate richer search queries,
+- and deliver more relevant product recommendations using ADK and external search capabilities.
+
+## Notes
+
+- The repository emphasizes an intelligent recommendation workflow rather than a static product search.
+- The approach is particularly suited for scenarios where users benefit from idea generation and exploration, such as gift shopping or inspiration-driven commerce.
