@@ -7,9 +7,12 @@ router = APIRouter(tags=["Agent Studio"])
 
 @router.post("/")
 def run_shop_agent(
-    user_query : str
+    user_query : str,
+    streaming:bool, Field()
 ):
     try:
+        if not streaming:
+            return 
 
     except Exception as e:
         # Any unexpected error will be caught here, and we return a 500 error.
