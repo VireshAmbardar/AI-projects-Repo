@@ -22,3 +22,5 @@ venv/
 poetry.lock
 
 .env
+
+.adk/
