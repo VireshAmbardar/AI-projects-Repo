@@ -28,7 +28,7 @@ async def adk_chat(request: GoogleADkRequestBody) -> RunId:
     # run_id that "doesn't exist yet" due to a race with the worker.
 
     # Need to run only once to create the tables
-    # await db.init_db()
+    await db.init_db()
 
     # for subsequent runs only
     await db.create_run(

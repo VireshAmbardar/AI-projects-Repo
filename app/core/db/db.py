@@ -16,7 +16,7 @@ from typing import Any, Optional
 
 import asyncpg
 
-from app.core.settings import settings
+from app.core.db_settings import settings
 
 NOTIFY_CHANNEL = "agent_events_channel"
 

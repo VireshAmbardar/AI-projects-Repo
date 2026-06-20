@@ -2,7 +2,7 @@ rabotMq will run via docker command
 
 sudo docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
 
-sudo celery -A app.core.celery.celery_app worker --loglevel=info 
+celery -A app.core.celery.celery_app worker --loglevel=info 
 
 
 http://localhost:15672/ -> management Port
@@ -18,3 +18,9 @@ TCP : 5672
 Diffiiculty
 - network connetion Pgadmin running on Windiows and  code in WSL
 - 
+
+sudo docker compose logs -f (tail logs continuously)
+sudo docker compose up -d
+sudo docker compose down — stop both containers (data stays, since it's in named volumes)
+sudo docker compose logs -f postgres / docker compose logs -f rabbitmq — watch logs if something's not connecting
+sudo docker compose down -v — stop and wipe the volumes (only if you want a totally clean DB/queue state)

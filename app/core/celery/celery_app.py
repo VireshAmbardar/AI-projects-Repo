@@ -1,6 +1,9 @@
 # app/core/celery_app.py
 from celery import Celery
 
+from dotenv import load_dotenv
+load_dotenv()
+
 celery_app = Celery(
     "bond_scanner",
     broker="amqp://guest:guest@localhost:5672//",  # Your RabbitMQ TCP

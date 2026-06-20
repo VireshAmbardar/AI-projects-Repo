@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DB_NAME = "bond_scanner"
 
 # Since i am using WSL so i need to use the localhost ip address of the host machine
-HOST_IP = "172.18.0.1"
+# HOST_IP = "172.18.0.1" <- moved to docker-compose.yml
 
 
 class Settings(BaseSettings):
@@ -17,14 +17,11 @@ class Settings(BaseSettings):
 
     postgres_host: str = Field(default="localhost")
     postgres_port: int = Field(default=5432)
-    postgres_user: str = Field(default="postgres")
+    postgres_user: str = Field(default="postgre")
     postgres_password: str = Field(default="1998")
-    postgres_db: str = Field(default="bond_scanner")
+    postgres_db: str = Field(default=DB_NAME)
 
-    database_url: str = Field(
-        default=f"postgresql://postgres:1998@{HOST_IP}:5432/{DB_NAME}",
-        description="asyncpg-compatible DSN, no '+asyncpg' driver suffix needed",
-    )
+    
 
     # groq_api_key: str  # <-- correct name
 
@@ -33,5 +30,14 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",  # change to "forbid" later if you want strict
     )
+
+    @property
+    def database_url(self) -> str:
+        """asyncpg-compatible DSN, no '+asyncpg' driver suffix needed.
+        Built from the fields above so it can never drift out of sync with them."""
+        return (
+            f"postgresql://{self.postgres_user}:{self.postgres_password}"
+            f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
+        )
 
 settings = Settings()

@@ -24,7 +24,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
 from app.core.db import db
-from app.core.settings import settings
+from app.core.db_settings import settings
 
 router = APIRouter(
     prefix="/adk",
