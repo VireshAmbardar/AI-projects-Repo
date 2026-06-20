@@ -6,7 +6,7 @@ if not asks follow up questions" steps from your pipeline diagram.
 
 from google.adk.agents import LlmAgent
 
-from app.core.agents.googleADK.model_config import MODEL
+from app.core.agents.googleADK.model_config import get_model
 
 GOAL_AGENT_INSTRUCTION = """
 You are the Goal Agent in a bond investment advisory pipeline.
@@ -27,7 +27,7 @@ Never recommend specific bonds yourself -- that's a different agent's job.
 
 goal_agent = LlmAgent(
     name="goal_agent",
-    model=MODEL,
+    model=get_model(),
     description=(
         "Extracts and validates the user's investment goal (amount, risk "
         "appetite, horizon, income need); asks a follow-up question if "

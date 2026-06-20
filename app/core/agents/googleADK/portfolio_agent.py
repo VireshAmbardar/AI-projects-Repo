@@ -2,7 +2,7 @@
 
 from google.adk.agents import LlmAgent
 
-from app.core.agents.googleADK.model_config import MODEL
+from app.core.agents.googleADK.model_config import get_model
 
 PORTFOLIO_AGENT_INSTRUCTION = """
 You are the Portfolio Construction Agent in a bond investment advisory
@@ -20,7 +20,7 @@ Agent's job.
 
 portfolio_agent = LlmAgent(
     name="portfolio_agent",
-    model=MODEL,
+    model=get_model(),
     description=(
         "Builds a concrete bond allocation (which bonds, how much in each) "
         "from risk-scored candidates and the user's goal."

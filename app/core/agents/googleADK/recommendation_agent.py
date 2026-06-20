@@ -6,7 +6,7 @@ Recommendation" + "Answer Follow-up Questions" in your diagram).
 
 from google.adk.agents import LlmAgent
 
-from app.core.agents.googleADK.model_config import MODEL
+from app.core.agents.googleADK.model_config import get_model
 
 RECOMMENDATION_AGENT_INSTRUCTION = """
 You are the Recommendation Agent in a bond investment advisory pipeline --
@@ -21,7 +21,7 @@ about the recommendation.
 
 recommendation_agent = LlmAgent(
     name="recommendation_agent",
-    model=MODEL,
+    model=get_model(),
     description=(
         "Explains the constructed bond portfolio in plain language and "
         "answers user follow-up questions."

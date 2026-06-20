@@ -6,8 +6,8 @@ HTTP call once you have a Bond API client (e.g. app/core/tools/bond_api.py).
 """
 
 from google.adk.agents import LlmAgent
-
-from app.core.agents.googleADK.model_config import MODEL
+from google.adk.tools import google_search
+from app.core.agents.googleADK.model_config import get_model
 
 
 def search_bonds(risk_appetite: str, investment_horizon_years: int, income_need: str) -> dict:
@@ -36,11 +36,11 @@ Construction Agent's job.
 
 bond_search_agent = LlmAgent(
     name="bond_search_agent",
-    model=MODEL,
+    model=get_model(),
     description=(
         "Searches for candidate bonds matching the user's risk appetite, "
         "horizon, and income need."
     ),
     instruction=BOND_SEARCH_INSTRUCTION,
-    tools=[search_bonds],
+    tools=[google_search],
 )

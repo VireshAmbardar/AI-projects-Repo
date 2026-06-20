@@ -40,4 +40,14 @@ class Settings(BaseSettings):
             f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
         )
 
+    @property
+    def sqlalchemy_database_url(self) -> str:
+        """SQLAlchemy-style async DSN (needs the '+asyncpg' driver suffix) --
+        required by ADK's DatabaseSessionService, which uses SQLAlchemy
+        internally rather than calling asyncpg directly."""
+        return (
+            f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}"
+            f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
+        )
+
 settings = Settings()

@@ -1,28 +1,28 @@
 from google.adk.agents import LlmAgent
 
 
-ROOT_AGNET_DESCRIPTION="""
+# ROOT_AGNET_DESCRIPTION="""
 
-"""
+# """
 
-ROOT_INSTRUCTIONS= '''
-'''
+# ROOT_INSTRUCTIONS= '''
+# '''
 
-# Free  gemini-3.5-flash or gemini-3.1-flash-lite 
-MODEL = "gemini-3.5-flash"
+# # Free  gemini-3.5-flash or gemini-3.1-flash-lite 
+# MODEL = "gemini-3.5-flash"
  
-root_agent = LlmAgent(
-    name='root_agent',
-    model=MODEL,
-    description="Root Agent",
-    instruction="Act as a Financial Assistent that Does the curretn market research Finds the Best bond According to user needs.",
-    # tools=[get_current_time],
-)
+# root_agent = LlmAgent(
+#     name='root_agent',
+#     model=MODEL,
+#     description="Root Agent",
+#     instruction="Act as a Financial Assistent that Does the curretn market research Finds the Best bond According to user needs.",
+#     # tools=[get_current_time],
+# )
 
 from google.adk.agents import LlmAgent
 from google.adk.tools.agent_tool import AgentTool
 
-from app.core.agents.googleADK.model_config import MODEL
+from app.core.agents.googleADK.model_config import get_model
 from app.core.agents.googleADK.goal_agent import goal_agent
 from app.core.agents.googleADK.bond_search_agent import bond_search_agent
 from app.core.agents.googleADK.risk_agent import risk_agent
@@ -56,7 +56,7 @@ whole pipeline.
 
 root_agent = LlmAgent(
     name='root_agent',
-    model=MODEL,
+    model=get_model(),
     description=ROOT_AGNET_DESCRIPTION,
     instruction=ROOT_INSTRUCTIONS,
     tools=[

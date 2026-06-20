@@ -2,7 +2,7 @@
 
 from google.adk.agents import LlmAgent
 
-from app.core.agents.googleADK.model_config import MODEL
+from app.core.agents.googleADK.model_config import get_model
 
 RISK_AGENT_INSTRUCTION = """
 You are the Risk Agent in a bond investment advisory pipeline.
@@ -18,7 +18,7 @@ Agent's job.
 
 risk_agent = LlmAgent(
     name="risk_agent",
-    model=MODEL,
+    model=get_model(),
     description=(
         "Scores candidate bonds' risk and flags mismatches against the "
         "user's stated risk appetite."

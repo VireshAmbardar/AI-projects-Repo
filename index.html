@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bond Advisor — Test Console</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --dim: #8b949e;
+    --accent: #2dd4bf;
+    --amber: #f0b429;
+    --red: #f85149;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+  main { width: 100%; max-width: 760px; }
+  h1 {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin: 0 0 4px;
+  }
+  .session-info { color: var(--border); font-size: 11px; margin-bottom: 20px; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  label { color: var(--dim); font-size: 12px; }
+  textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 14px;
+    width: 100%;
+    resize: vertical;
+    min-height: 70px;
+  }
+  button {
+    background: var(--accent);
+    color: #04221d;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  button:disabled { background: var(--border); color: var(--dim); cursor: not-allowed; }
+
+  .status-line { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; color: var(--dim); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dim); }
+  .dot.running { background: var(--amber); animation: pulse 1s infinite; }
+  .dot.done { background: var(--accent); }
+  .dot.error { background: var(--red); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  #log {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    height: 380px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .ev { padding: 6px 0; border-bottom: 1px dashed var(--border); }
+  .ev:last-child { border-bottom: none; }
+  .ev-type { color: var(--accent); font-weight: 600; }
+  .ev-type.done { color: var(--accent); }
+  .ev-type.error { color: var(--red); }
+  .ev-payload { color: var(--dim); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Bond Advisor — Test Console</h1>
+  <div class="session-info" id="sessionInfo"></div>
+
+  <div class="panel">
+    <div class="field">
+      <label for="query">Message to agent</label>
+      <textarea id="query">I have ₹5 Lakhs. Risk appetite: Medium. Investment horizon: 3 years. Need: Monthly income.</textarea>
+    </div>
+    <button id="sendBtn" onclick="sendQuery()">Send to Agent</button>
+  </div>
+
+  <div class="panel">
+    <div class="status-line">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">Idle</span>
+      <span id="runIdText" style="margin-left:auto;color:var(--border)"></span>
+    </div>
+    <div id="log"></div>
+  </div>
+</main>
+
+<script>
+  // Adjust if your API runs elsewhere.
+  const API_BASE = "http://localhost:8000/api/v1";
+
+  // Dummy, generated once per page load -- not tied to any real auth.
+  // One fixed session_id for the whole page session, as requested.
+  const USER_ID = "demo-user-" + crypto.randomUUID().slice(0, 8);
+  const SESSION_ID = "demo-session-" + crypto.randomUUID();
+
+  document.getElementById("sessionInfo").textContent =
+    `user_id: ${USER_ID}  |  session_id: ${SESSION_ID}`;
+
+  let currentSource = null;
+
+  function setStatus(state, text) {
+    const dot = document.getElementById("statusDot");
+    dot.className = "dot " + state;
+    document.getElementById("statusText").textContent = text;
+  }
+
+  function logEvent(type, payload) {
+    const log = document.getElementById("log");
+    const div = document.createElement("div");
+    div.className = "ev";
+    div.innerHTML =
+      `<span class="ev-type ${type}">${type}</span><br>` +
+      `<span class="ev-payload">${escapeHtml(JSON.stringify(payload, null, 2))}</span>`;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  }
+
+  async function sendQuery() {
+    if (currentSource) currentSource.close();
+    document.getElementById("log").innerHTML = "";
+    document.getElementById("sendBtn").disabled = true;
+    setStatus("running", "Dispatching...");
+
+    const body = {
+      query: document.getElementById("query").value,
+      user_id: USER_ID,
+      session_id: SESSION_ID,
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/adk/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) throw new Error(`POST /adk/chat failed: ${res.status}`);
+      const { runId: run_id } = await res.json();
+      document.getElementById("runIdText").textContent = run_id;
+      setStatus("running", "Agent running...");
+      streamRun(run_id);
+    } catch (err) {
+      setStatus("error", err.message);
+      document.getElementById("sendBtn").disabled = false;
+    }
+  }
+
+  function streamRun(runId) {
+    const source = new EventSource(`${API_BASE}/adk/chat/stream/${runId}`);
+    currentSource = source;
+
+    source.addEventListener("agent_event", (e) => logEvent("agent_event", JSON.parse(e.data)));
+    source.addEventListener("done", (e) => {
+      logEvent("done", JSON.parse(e.data));
+      setStatus("done", "Done");
+      source.close();
+      document.getElementById("sendBtn").disabled = false;
+    });
+    source.addEventListener("error", (e) => {
+      // Note: this fires both for our own "error" SSE event AND for
+      // connection-level failures (e.g. server down) -- e.data is only
+      // present in the former case.
+      if (e.data) {
+        logEvent("error", JSON.parse(e.data));
+        setStatus("error", "Agent error");
+      } else {
+        setStatus("error", "Connection lost");
+      }
+      source.close();
+      document.getElementById("sendBtn").disabled = false;
+    });
+  }
+</script>
+</body>
+</html>
