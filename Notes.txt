@@ -1,0 +1,17 @@
+rabotMq will run via docker command
+
+sudo docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
+
+http://localhost:15672/ -> management Port
+TCP : 5672
+
+
+{
+  "query": "Suggest me some bonds top invest in 2026 india",
+  "user_id": "4998749d-b8b4-42b4-99b1-236a84a929be",
+  "session_id": "0ce6b637-8e22-42ba-a0d8-887548fd1462"
+}
+
+Diffiiculty
+- network connetion Pgadmin running on Windiows and  code in WSL
+- 
