@@ -38,8 +38,9 @@ async def adk_chat(request: GoogleADkRequestBody) -> RunId:
         query=request.query,
     )
 
+
     celery_app.send_task(
-        "app.core.agents.googleADK.runner.run_agent_task",
+        "run_agent_task",
         kwargs={
             "run_id": run_id,
             "user_query": request.query,

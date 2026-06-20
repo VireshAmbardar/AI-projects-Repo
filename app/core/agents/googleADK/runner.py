@@ -20,6 +20,7 @@ from google.genai import types
 from app.core.agents.googleADK.base import root_agent
 from app.core.celery.celery_app import celery_app
 from app.core import db
+from uuid import uuid4
 
 APP_NAME = "bond_scanner"
 
@@ -48,6 +49,8 @@ async def _run_agent_async(run_id: str, user_query: str, user_id: str, session_i
         # from the session you create below.
     )
 
+    if not session_id:
+        session_id = str(uuid4())
     await session_service.create_session(
         app_name=APP_NAME,
         user_id=user_id,
@@ -58,16 +61,22 @@ async def _run_agent_async(run_id: str, user_query: str, user_id: str, session_i
 
     seq = 0
     try:
-        async for event in runner.run_async(
-            user_id=user_id,
-            session_id=session_id,
-            new_message=content,
-        ):
-            seq += 1
-            await db.append_event(run_id, seq, "agent_event", _event_to_dict(event))
+        from loguru import logger
+        logger.info(f"Running agent for run_id: {run_id}")
+        try:
+            async for event in runner.run_async(
+                user_id=user_id,
+                session_id=session_id,
+                new_message=content,
+            ):
+                seq += 1
+                await db.append_event(run_id, seq, "agent_event", _event_to_dict(event))
 
-        seq += 1
-        await db.append_event(run_id, seq, "done", {"message": "run complete"})
+            seq += 1
+            await db.append_event(run_id, seq, "done", {"message": "run complete"})
+        except Exception as exc:
+            logger.error(f"Error running agent for run_id: {run_id} - {str(exc)}")
+        # await db.append_event(run_id, seq, "error", {"error": str(exc)})
 
     except Exception as exc:  # noqa: BLE001 — we want to persist *any* failure
         seq += 1
@@ -75,6 +84,6 @@ async def _run_agent_async(run_id: str, user_query: str, user_id: str, session_i
         raise
 
 
-@celery_app.task(name="app.core.agents.googleADK.runner.run_agent_task")
+@celery_app.task(name="run_agent_task")
 def run_agent_task(run_id: str, user_query: str, user_id: str, session_id: str) -> None:
     asyncio.run(_run_agent_async(run_id, user_query, user_id, session_id))

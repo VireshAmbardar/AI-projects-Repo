@@ -12,6 +12,8 @@ from typing import Optional
 from app.settings import settings
 # from app.routers import hbrouter
 from app import routers
+from dotenv import load_dotenv
+load_dotenv()
 
 PREFIX = "/api"
 VERSION = "v1"
