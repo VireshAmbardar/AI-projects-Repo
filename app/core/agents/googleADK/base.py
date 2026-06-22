@@ -1,25 +1,4 @@
 from google.adk.agents import LlmAgent
-
-
-# ROOT_AGNET_DESCRIPTION="""
-
-# """
-
-# ROOT_INSTRUCTIONS= '''
-# '''
-
-# # Free  gemini-3.5-flash or gemini-3.1-flash-lite 
-# MODEL = "gemini-3.5-flash"
- 
-# root_agent = LlmAgent(
-#     name='root_agent',
-#     model=MODEL,
-#     description="Root Agent",
-#     instruction="Act as a Financial Assistent that Does the curretn market research Finds the Best bond According to user needs.",
-#     # tools=[get_current_time],
-# )
-
-from google.adk.agents import LlmAgent
 from google.adk.tools.agent_tool import AgentTool
 
 from app.core.agents.googleADK.model_config import get_model
@@ -38,16 +17,19 @@ search, risk scoring, portfolio construction, and final recommendation.
 ROOT_INSTRUCTIONS = """
 You are the Agent Orchestrator for a bond investment advisory system.
 
-Call your tools in this order for a new request:
-  1. goal_agent     -- confirm investment_amount, risk_appetite,
-                        investment_horizon, income_need are all known.
-                        If goal_agent says info is missing, relay its
-                        follow-up question to the user and STOP -- wait
-                        for their answer before continuing.
-  2. bond_search_agent -- once the goal is complete, find candidate bonds.
-  3. risk_agent        -- score those candidates against risk_appetite.
-  4. portfolio_agent   -- build the concrete allocation.
-  5. recommendation_agent -- explain the final recommendation to the user.
+On a brand-new conversation, transfer immediately to goal_agent -- it owns
+collecting investment_amount, risk_appetite, investment_horizon, and
+income_need from the user, including asking follow-up questions and
+waiting across multiple turns if needed. You will not see those follow-up
+turns; goal_agent handles them directly with the user.
+
+goal_agent will transfer back to you only once all four fields are
+confirmed. When that happens, run the rest of the pipeline in order, in a
+single pass, without asking the user anything in between:
+  1. bond_search_agent -- find candidate bonds.
+  2. risk_agent         -- score those candidates against risk_appetite.
+  3. portfolio_agent    -- build the concrete allocation.
+  4. recommendation_agent -- explain the final recommendation to the user.
 
 After the first full pass, route any user follow-up questions about the
 recommendation straight to recommendation_agent rather than re-running the
@@ -59,8 +41,8 @@ root_agent = LlmAgent(
     model=get_model(),
     description=ROOT_AGNET_DESCRIPTION,
     instruction=ROOT_INSTRUCTIONS,
+    sub_agents=[goal_agent],
     tools=[
-        AgentTool(agent=goal_agent),
         AgentTool(agent=bond_search_agent),
         AgentTool(agent=risk_agent),
         AgentTool(agent=portfolio_agent),

@@ -18,16 +18,46 @@ from google.genai import types
 
 logger = logging.getLogger(__name__)
 
-# LiteLLM model id format is "<provider>/<model>". Swap GROQ_MODEL for any
-# of the other Groq options if you want more speed vs. more reasoning power:
+# LiteLLM model id format is "<provider>/<model>". llama-3.3-70b-versatile
+# has shown unreliable structured tool-calling with multi-tool agents (it
+# sometimes emits a text-formatted "<function=...>" call instead of a real
+# tool call, which is what triggered the fallback in the first place).
+# gpt-oss-120b is OpenAI's own architecture and tends to follow OpenAI-style
+# tool-calling schemas (which is what ADK/LiteLLM send) more reliably.
 #   "groq/llama-3.1-8b-instant"        -- fastest, lowest cost
-#   "groq/llama-3.3-70b-versatile"     -- best balance (default below)
-#   "groq/openai/gpt-oss-120b"         -- strongest reasoning
-GROQ_MODEL = "groq/llama-3.3-70b-versatile"
+#   "groq/llama-3.3-70b-versatile"     -- more reasoning, less reliable tool use
+#   "groq/openai/gpt-oss-120b"         -- best tool-calling fidelity (try this)
+GROQ_MODEL = "groq/openai/gpt-oss-120b"
 
 # TODO verify this against Google's current Gemini model list before relying
 # on it -- can't confirm "gemini-3.5-flash" is a real/available model id.
 GEMINI_FALLBACK_MODEL = "gemini-3.5-flash"
+
+
+def _patch_missing_thought_signatures(contents):
+    """Seed Google's documented bypass token on any function_call part that's
+    missing a thought_signature, instead of dropping that history outright.
+
+    Gemini 3-class models strictly require a thought_signature on every
+    function_call part replayed in conversation history -- it's a
+    cryptographic token Gemini itself generates alongside its own tool
+    calls. Groq-generated turns never had one, so without this patch Gemini
+    rejects the entire request with 400 INVALID_ARGUMENT the moment it sees
+    one of Groq's function_call parts in history. The bypass token is
+    Google's own documented escape hatch for exactly this situation (history
+    written by a different provider/framework that didn't preserve the
+    signature). See: https://ai.google.dev/gemini-api/docs/thought-signatures
+    """
+    BYPASS = "skip_thought_signature_validator"
+    patched = []
+    for content in contents:
+        new_parts = []
+        for p in content.parts:
+            if getattr(p, "function_call", None) and not getattr(p, "thought_signature", None):
+                p = p.model_copy(update={"thought_signature": BYPASS})
+            new_parts.append(p)
+        patched.append(content.model_copy(update={"parts": new_parts}))
+    return patched
 
 
 class FallbackLlm(BaseLlm):
@@ -55,7 +85,11 @@ class FallbackLlm(BaseLlm):
                 "Primary model (%s) failed: %s -- falling back to %s",
                 self.primary.model, exc, self.fallback.model,
             )
-            async for response in self.fallback.generate_content_async(llm_request, stream):
+            fallback_contents = _patch_missing_thought_signatures(llm_request.contents)
+            fallback_request = llm_request.model_copy(
+                update={"model": self.fallback.model, "contents": fallback_contents}
+            )
+            async for response in self.fallback.generate_content_async(fallback_request, stream):
                 yield response
 
 
